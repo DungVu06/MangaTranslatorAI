@@ -5,8 +5,11 @@ from torchvision.models.detection import fasterrcnn_resnet50_fpn, FasterRCNN_Res
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.anchor_utils import AnchorGenerator
 
-def faster_rcnn(num_classes, anchor_sizes, anchor_ratios):
-    model = fasterrcnn_resnet50_fpn(weights=FasterRCNN_ResNet50_FPN_Weights.DEFAULT)
+def faster_rcnn(num_classes, anchor_sizes, anchor_ratios, box_nms_thresh=0.5):
+    model = fasterrcnn_resnet50_fpn(
+        weights=FasterRCNN_ResNet50_FPN_Weights.DEFAULT, 
+        box_nms_threshold=box_nms_thresh
+    )
 
     formatted_sizes = tuple((size,) for size in anchor_sizes)
     formatted_ratios = (tuple(anchor_ratios),) * len(formatted_sizes)
@@ -40,7 +43,6 @@ if __name__ == "__main__":
     model = faster_rcnn(
         num_classes=config["model"]["num_classes"],
         anchor_sizes=config["model"]["anchor_sizes"],
-        anchor_ratios=config["model"]["anchor_ratios"]
+        anchor_ratios=config["model"]["anchor_ratios"],
+        box_nms_thresh=config["model"]["box_nms_thresh"]
     )
-
-    print(model)

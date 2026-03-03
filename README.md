@@ -81,7 +81,7 @@ The `models/faster_rcnn_default_weights.pt` file is not included in this reposit
 1. **Quick Test**
 To verify if the model correctly detects bounding boxes, reads Japanese text and translating:
 ``` bash
-python inference.py
+python inference.py FILE-NAME
 ```
 2. **Full Pipeline (End-to-End Translation)**
 To run the complete process from a raw Japanese manga page to a translated English page:
@@ -93,12 +93,13 @@ python main.py FILE-NAME
 
 ## 🧠 Current Challenges
   * **Contextual Constraints**: The model is currently limited to extracting text exclusively within speech bubbles.
-  * **Geometric Sensitivity**: Performance degrades significantly when processing non-rectangular or non-horizontal frames.
-  * **Complex Scene Handling**: The system struggles with high-density action scenes, overlapping characters, or cluttered text layouts.
-  * **Text Reflow Issues**: The text-wrapping logic is rudimentary, relying on fixed bounding boxes which often leads to unnatural line breaks. Text size is not flexible making it not optimized for different bubble's sizes.
+  * **Geometric Sensitivity** (FIXED): Performance degrades significantly when processing non-rectangular or isolated single-frame inputs.
+  * **Complex Scene Handling** (FIXED): The system struggles with high-density action scenes, overlapping characters, or cluttered text layouts.
+  * **Text Reflow Issues** (FIXED): The text-wrapping logic is rudimentary, relying on fixed bounding boxes which often leads to unnatural line breaks. Text size is not flexible making it not optimized for different bubble's sizes.
   * **Rendering Artifacts**: The model struggles when a character occupies a significant portion of the speech bubble; the in-painting algorithm may inadvertently erase parts of the character's body (specifically following the text's bounding box, which results in an unnatural visual output). The text removal algorithm encounters significant difficulties when processing raw images (low-resolution or uncleaned source material).
   * **Performance Bottlenecks**: Overall execution speed is suboptimal due to the overhead of the Faster R-CNN architecture and external API latency. (~8s/img)
-  * **Layout Sequencing**: The sorting algorithm fails to correctly sequence text when processing double-page spreads (two pages per image) instead of individual pages.
+  * **Layout Sequencing** (FIXED): The sorting algorithm fails to correctly sequence text when processing double-page spreads (two pages per image) instead of individual pages.
+  * **Font errors**: The model occasionally flags standalone punctuation (?, !, .) as Japanese text. This can cause the translation module to fail or trigger font rendering errors
   
 ## 🆙 Version History
 * **v1.0.0:**
@@ -110,9 +111,12 @@ python main.py FILE-NAME
   * Better colors and cleaner text removal in the final translated images.
   * Minor updates to make running main.py and inference.py easier.
   * Update new font.
-* **v1.2.0 (Current):**
+* **v1.2.0:**
   * Update new text wrapping/size algorithms for faster and more accurate translated text!
-
+* **v1.3.0 (Current):**
+  * A new Faster R-CNN model trained with aggressive data augmentation (harder transforms) to ensure robust performance across diverse manga art styles.
+  * Implemented a new filtering logic in post-processing to prevent the model from detecting redundant small text boxes inside larger ones.
+  * Significantly improved text detection accuracy within high-action frames.
 
 ## 🙏 Thanks for Watching
 If you find this project interesting or useful, feel free to ⭐ star the repository and share your feedback.

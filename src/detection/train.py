@@ -24,12 +24,17 @@ with open(yaml_path, "r", encoding="utf-8") as f:
 # Dataset
 train_transform = A.Compose([
     A.Blur(blur_limit=3, p=0.2),
-    A.Affine(rotate=(-5,5), scale=(0.95, 1.05), p=0.3),
+    A.Affine(rotate=(-5, 5), scale=(0.6, 1.4), p=0.4),
+    A.RandomSizedBBoxSafeCrop(width=1024, height=1024, erosion_rate=0, p=0.2),
+    A.GaussNoise(var_limit=(10.0, 50.0), p=0.2),
     A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.3),
-    ToTensorV2()
+    A.CoarseDropout(max_holes=8, max_height=64, max_width=64, fill_value=255, p=0.2),
+    ToTensorV2(),
 ], bbox_params=A.BboxParams(
     format="pascal_voc",
     label_fields=["labels"],
+    min_visibility=0.3,
+    min_area=100,
 ))
 val_transform = A.Compose([
     ToTensorV2()
@@ -184,7 +189,8 @@ def train(train_dataloader, val_dataloader, model, optimizer, scheduler, device,
 model = faster_rcnn(
     num_classes=config["model"]["num_classes"],
     anchor_sizes=config["model"]["anchor_sizes"],
-    anchor_ratios=config["model"]["anchor_ratios"]
+    anchor_ratios=config["model"]["anchor_ratios"],
+    box_nms_thresh=config["model"]["box_nms_thresh"]
 )
 
 optimizer = torch.optim.SGD(
@@ -203,4 +209,4 @@ model_save_path = Path("")
 checkpoint_save_path = Path("")
 epochs = config["training"]["num_epochs"]
 
-print(config)
+train(train_dataloader, val_dataloader, model, optimizer, scheduler, device, epochs, model_save_path, checkpoint_save_path, use_wandb=True)

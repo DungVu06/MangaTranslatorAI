@@ -6,9 +6,12 @@ data:
   num_workers: 2
 
 model:
+  weights_path: "models/faster_rcnn_v1_1.pt"
   num_classes: 3
   anchor_sizes: [32, 64, 128, 256, 512]
   anchor_ratios: [0.2, 0.5, 1.0, 2.0, 4.0]
+  box_nms_thresh: 0.15
+  confidence_thresh: 0.6
 
 training:
   batch_size: 2
