@@ -75,7 +75,7 @@ cd MangaTranslator
 pip install -r requirements.txt
 ```
 3. **Important Note on Detection Model Weights:** 
-The `models/faster_rcnn_default_weights.pt` file is not included in this repository due to GitHub's file size limits. Please train the model yourself (using `src/detection/train.py`) or download the pre-trained weights and place them in the models/ directory before running the pipeline. Download link: [Google Drive](https://drive.google.com/file/d/1gzLn94gRnxJJjMBsZjFPCjoA76jD7XLp/view?usp=sharing)
+The `models/faster_rcnn_default_weights.pt` file is not included in this repository due to GitHub's file size limits. Please train the model yourself (using `src/detection/train.py`) or download the pre-trained weights and place them in the models/ directory before running the pipeline. Download link: [Google Drive](https://drive.google.com/file/d/1oO7cwB6r6d8VwlsraMT1TUMooibbqcbU/view?usp=sharing)
 
 ## 🚀 Usage
 1. **Quick Test**
